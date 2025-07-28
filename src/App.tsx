@@ -5,6 +5,8 @@ import { ClientModal } from './components/ClientModal';
 import { ToastContainer } from './components/Toast';
 import { useClients } from './hooks/useClients';
 import { useToast } from './hooks/useToast';
+import { LandingPage } from './pages/LandingPage';
+import { Routes, Route } from 'react-router-dom';
 
 function App() {
   const [currentPage, setCurrentPage] = useState('dashboard');
@@ -92,12 +94,17 @@ function App() {
 
   return (
     <div className="App">
-      <Layout 
-        currentPage={currentPage}
-        onPageChange={handlePageChange}
-      >
-        {renderCurrentPage()}
-      </Layout>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/app/*" element={
+          <Layout 
+            currentPage={currentPage}
+            onPageChange={handlePageChange}
+          >
+            {renderCurrentPage()}
+          </Layout>
+        } />
+      </Routes>
 
       <ClientModal
         isOpen={isClientModalOpen}

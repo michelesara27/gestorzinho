@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Header } from './Header';
 import { Navigation } from './Navigation';
+import { useLocation } from 'react-router-dom';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -23,6 +24,7 @@ export const Layout: React.FC<LayoutProps> = ({
 }) => {
   const [isMobile, setIsMobile] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     const checkScreenSize = () => {
@@ -43,25 +45,32 @@ export const Layout: React.FC<LayoutProps> = ({
     setIsMenuOpen(false);
   };
 
+  // Verifica se é a landing page
+  const isLandingPage = location.pathname === '/';
+
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header 
-        onMenuToggle={handleMenuToggle}
-        isMobile={isMobile}
-        currentPage={pageLabels[currentPage as keyof typeof pageLabels] || 'Dashboard'}
-      />
+      {!isLandingPage && (
+        <Header 
+          onMenuToggle={handleMenuToggle}
+          isMobile={isMobile}
+          currentPage={pageLabels[currentPage as keyof typeof pageLabels] || 'Dashboard'}
+        />
+      )}
       
-      <Navigation
-        currentPage={currentPage}
-        onPageChange={onPageChange}
-        isMobile={isMobile}
-        isMenuOpen={isMenuOpen}
-        onMenuClose={handleMenuClose}
-      />
+      {!isLandingPage && (
+        <Navigation
+          currentPage={currentPage}
+          onPageChange={onPageChange}
+          isMobile={isMobile}
+          isMenuOpen={isMenuOpen}
+          onMenuClose={handleMenuClose}
+        />
+      )}
 
       <main className={`
         transition-all duration-300
-        ${isMobile ? 'pt-4 pb-20 px-4' : 'lg:pl-64 pt-4 px-4 sm:px-6 lg:px-8'}
+        ${isLandingPage ? 'pt-0' : isMobile ? 'pt-4 pb-20 px-4' : 'lg:pl-64 pt-4 px-4 sm:px-6 lg:px-8'}
       `}>
         <div className="max-w-7xl mx-auto">
           {children}
